@@ -29,3 +29,19 @@ fn test_smallvec() {
         .0;
     assert_eq!(start.as_slice(), decoded_vec.as_slice());
 }
+
+#[test]
+fn test_smallvec_bytes() {
+    let start: SmallVec<[u8; 24]> = SmallVec::from_slice(b"Hello, world!");
+
+    let encoded_size = bincode::encoded_size(&start, bincode::config::standard()).unwrap();
+    let data = bincode::encode_to_vec(&start, bincode::config::standard()).unwrap();
+    assert_eq!(data.len(), encoded_size);
+
+    let decoded: SmallVec<[u8; 24]> =
+        bincode::decode_from_slice(&data, bincode::config::standard())
+            .unwrap()
+            .0;
+    assert_eq!(start, decoded);
+}
+
