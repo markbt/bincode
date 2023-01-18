@@ -1,7 +1,7 @@
 use super::{write::Writer, Encode, Encoder};
 use crate::{
     config::{
-        Endian, IntEncoding, InternalArrayLengthConfig, InternalEndianConfig,
+        Endian, IntEncoding, InternalEndianConfig,
         InternalIntEncodingConfig,
     },
     error::EncodeError,
@@ -16,6 +16,8 @@ use core::{
     ops::{Bound, Range, RangeInclusive},
     time::Duration,
 };
+#[cfg(not(feature = "use_min_specialization"))]
+use crate::config::InternalArrayLengthConfig;
 
 impl Encode for () {
     fn encode<E: Encoder>(&self, _: &mut E) -> Result<(), EncodeError> {
@@ -283,16 +285,7 @@ impl Encode for char {
     }
 }
 
-// BlockedTODO: https://github.com/rust-lang/rust/issues/37653
-//
-// We'll want to implement encoding for both &[u8] and &[T: Encode],
-// but those implementations overlap because u8 also implements Encode
-// impl Encode for &'_ [u8] {
-//     fn encode<E: Encoder>(&self, encoder: &mut E) -> Result<(), EncodeError> {
-//         encoder.writer().write(*self)
-//     }
-// }
-
+#[cfg(not(feature = "use_min_specialization"))]
 impl<T> Encode for [T]
 where
     T: Encode,
@@ -346,6 +339,7 @@ impl Encode for str {
     }
 }
 
+#[cfg(not(feature = "use_min_specialization"))]
 impl<T, const N: usize> Encode for [T; N]
 where
     T: Encode,

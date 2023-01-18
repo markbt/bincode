@@ -224,16 +224,7 @@ impl EncodedSize for char {
     }
 }
 
-// BlockedTODO: https://github.com/rust-lang/rust/issues/37653
-//
-// We'll want to implement encoding for both &[u8] and &[T: EncodedSizedSize],
-// but those implementations overlap because u8 also implements EncodedSize
-// impl EncodedSize for &'_ [u8] {
-//     fn encoded_size<C: Config>(&self) -> Result<usize, EncodeError> {
-//         encoder.writer().write(*self)
-//     }
-// }
-
+#[cfg(not(feature = "use_min_specialization"))]
 impl<T> EncodedSize for [T]
 where
     T: EncodedSize,
@@ -271,6 +262,7 @@ impl EncodedSize for str {
     }
 }
 
+#[cfg(not(feature = "use_min_specialization"))]
 impl<T, const N: usize> EncodedSize for [T; N]
 where
     T: EncodedSize,

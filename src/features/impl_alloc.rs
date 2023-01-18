@@ -316,6 +316,7 @@ where
     }
 }
 
+#[cfg(not(feature = "use_min_specialization"))]
 impl<T> Decode for Vec<T>
 where
     T: Decode,
@@ -335,6 +336,7 @@ where
     }
 }
 
+#[cfg(not(feature = "use_min_specialization"))]
 impl<'de, T> BorrowDecode<'de> for Vec<T>
 where
     T: BorrowDecode<'de>,
@@ -354,6 +356,7 @@ where
     }
 }
 
+#[cfg(not(feature = "use_min_specialization"))]
 impl<T> Encode for Vec<T>
 where
     T: Encode,
@@ -367,6 +370,7 @@ where
     }
 }
 
+#[cfg(not(feature = "use_min_specialization"))]
 impl<T> EncodedSize for Vec<T>
 where
     T: EncodedSize,
@@ -451,7 +455,7 @@ where
     T: Decode,
 {
     fn decode<D: Decoder>(decoder: &mut D) -> Result<Self, DecodeError> {
-        let vec = Vec::decode(decoder)?;
+        let vec = Vec::<T>::decode(decoder)?;
         Ok(vec.into_boxed_slice())
     }
 }
@@ -461,7 +465,7 @@ where
     T: BorrowDecode<'de> + 'de,
 {
     fn borrow_decode<D: BorrowDecoder<'de>>(decoder: &mut D) -> Result<Self, DecodeError> {
-        let vec = Vec::borrow_decode(decoder)?;
+        let vec = Vec::<T>::borrow_decode(decoder)?;
         Ok(vec.into_boxed_slice())
     }
 }
@@ -550,7 +554,7 @@ where
     T: Decode,
 {
     fn decode<D: Decoder>(decoder: &mut D) -> Result<Self, DecodeError> {
-        let vec = Vec::decode(decoder)?;
+        let vec = Vec::<T>::decode(decoder)?;
         Ok(vec.into())
     }
 }
@@ -560,7 +564,7 @@ where
     T: BorrowDecode<'de> + 'de,
 {
     fn borrow_decode<D: BorrowDecoder<'de>>(decoder: &mut D) -> Result<Self, DecodeError> {
-        let vec = Vec::borrow_decode(decoder)?;
+        let vec = Vec::<T>::borrow_decode(decoder)?;
         Ok(vec.into())
     }
 }
@@ -629,7 +633,7 @@ where
     T: Decode,
 {
     fn decode<D: Decoder>(decoder: &mut D) -> Result<Self, DecodeError> {
-        let vec = Vec::decode(decoder)?;
+        let vec = Vec::<T>::decode(decoder)?;
         Ok(vec.into())
     }
 }
@@ -640,7 +644,7 @@ where
     T: BorrowDecode<'de> + 'de,
 {
     fn borrow_decode<D: BorrowDecoder<'de>>(decoder: &mut D) -> Result<Self, DecodeError> {
-        let vec = Vec::borrow_decode(decoder)?;
+        let vec = Vec::<T>::borrow_decode(decoder)?;
         Ok(vec.into())
     }
 }

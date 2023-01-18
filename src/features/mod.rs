@@ -20,3 +20,7 @@ pub mod serde;
 #[cfg(feature = "smallvec")]
 #[cfg_attr(docsrs, doc(cfg(feature = "smallvec")))]
 mod impl_smallvec;
+
+#[cfg(feature = "use_min_specialization")]
+#[cfg_attr(docsrs, doc(cfg(feature = "use_min_specialization")))]
+mod use_min_specialization;

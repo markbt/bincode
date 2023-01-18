@@ -30,6 +30,7 @@ std = ["alloc", "serde?/std"]
 alloc = ["serde?/alloc"]
 derive = ["bincode_derive"]
 smallvec = ["dep:smallvec"]
+use_min_specialization = []
 
 [dependencies]
 bincode_derive = { path = "derive", version = "2.0.0-rc.2", optional = true }

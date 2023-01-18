@@ -4,14 +4,13 @@ use super::{
 };
 use crate::{
     config::{
-        Endian, IntEncoding, InternalArrayLengthConfig, InternalEndianConfig,
+        Endian, IntEncoding, InternalEndianConfig,
         InternalIntEncodingConfig,
     },
     error::{DecodeError, IntegerType},
     impl_borrow_decode,
 };
 use core::{
-    any::TypeId,
     cell::{Cell, RefCell},
     num::{
         NonZeroI128, NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8, NonZeroIsize, NonZeroU128,
@@ -20,6 +19,8 @@ use core::{
     ops::{Bound, Range, RangeInclusive},
     time::Duration,
 };
+#[cfg(not(feature = "use_min_specialization"))]
+use crate::config::InternalArrayLengthConfig;
 
 impl Decode for bool {
     fn decode<D: Decoder>(decoder: &mut D) -> Result<Self, DecodeError> {
@@ -443,6 +444,7 @@ impl<'a, 'de: 'a> BorrowDecode<'de> for &'a str {
     }
 }
 
+#[cfg(not(feature = "use_min_specialization"))]
 impl<T, const N: usize> Decode for [T; N]
 where
     T: Decode + Sized + 'static,
@@ -461,7 +463,7 @@ where
         decoder.claim_bytes_read(core::mem::size_of::<[T; N]>())?;
 
         // Optimize for `[u8; N]`
-        if TypeId::of::<u8>() == TypeId::of::<T>() {
+        if core::any::TypeId::of::<u8>() == core::any::TypeId::of::<T>() {
             let mut buf = [0u8; N];
             decoder.reader().read(&mut buf)?;
             let ptr = &mut buf as *mut _ as *mut [T; N];
@@ -484,6 +486,7 @@ where
     }
 }
 
+#[cfg(not(feature = "use_min_specialization"))]
 impl<'de, T, const N: usize> BorrowDecode<'de> for [T; N]
 where
     T: BorrowDecode<'de> + Sized + 'static,
@@ -502,7 +505,7 @@ where
         decoder.claim_bytes_read(core::mem::size_of::<[T; N]>())?;
 
         // Optimize for `[u8; N]`
-        if TypeId::of::<u8>() == TypeId::of::<T>() {
+        if core::any::TypeId::of::<u8>() == core::any::TypeId::of::<T>() {
             let mut buf = [0u8; N];
             decoder.reader().read(&mut buf)?;
             let ptr = &mut buf as *mut _ as *mut [T; N];

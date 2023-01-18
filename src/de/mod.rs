@@ -1,7 +1,7 @@
 //! Decoder-based structs and traits.
 
 mod decoder;
-mod impl_core;
+pub(crate) mod impl_core;
 mod impl_tuples;
 mod impls;
 
