@@ -53,9 +53,14 @@ harness = false
 name = "inline"
 harness = false
 
+[[bench]]
+name = "size"
+harness = false
+
 [profile.bench]
 codegen-units = 1
 debug = 1
+lto = "thin"
 
 [package.metadata.docs.rs]
 all-features = true

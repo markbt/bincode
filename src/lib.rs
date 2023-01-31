@@ -204,3 +204,31 @@ pub mod migration_guide {
 mod readme {
     #![doc = include_str!("../readme.md")]
 }
+
+
+
+
+
+/** Writer which only counts the bytes "written" to it */
+struct SizeOnlyWriter<'a> {
+    bytes_written: &'a mut usize
+}
+
+impl<'a> Writer for SizeOnlyWriter<'a> {
+    fn write(&mut self, bytes: &[u8]) -> Result<(), error::EncodeError> {
+        *self.bytes_written += bytes.len();
+        Ok(())
+    }
+}
+
+/** Return the serialized size of an `Encode` object. */
+pub fn serialized_size<T:Encode,C:Config>(obj:&T, config:C) -> Result<usize, error::EncodeError> {
+    let mut size = 0usize;
+    let writer = SizeOnlyWriter { bytes_written: &mut size };
+    let mut ei = enc::EncoderImpl::new(writer, config);
+    obj.encode(&mut ei)?;
+    Ok(size)
+}
+
+
+
